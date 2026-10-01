@@ -10,10 +10,8 @@ const signupUrl = import.meta.env.PUBLIC_SIGNUP_URL ?? '';
 
 <section class="cta" aria-labelledby="cta-title">
 	<div>
-		<h2 class="cta-title" id="cta-title">New guide every week</h2>
-		<p class="cta-text">
-			Every SWG Devo video gets a written guide here with the exact settings. Subscribe on YouTube or get new guides by email.
-		</p>
+		<h2 class="cta-title" id="cta-title">{SITE.cta.title}</h2>
+		<p class="cta-text">{SITE.cta.text}</p>
 		<div class="cta-actions">
 			<a class="button" href={SITE.youtubeChannel} target="_blank" rel="noopener">
 				<Icon name="youtube" /> Subscribe on YouTube

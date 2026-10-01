@@ -14,14 +14,14 @@ import {
 	type Post,
 } from './schema';
 import { makeSlug, renderBody, type Heading } from './markdown';
-import { mockSource } from './mock';
+import { fileSource } from './file';
 import { httpSource } from './http';
 
 export type { Author, Category, Game, Post, Heading };
 export type { ImageRef, Faq, Review, Video } from './schema';
 
 const SOURCES: Record<string, ContentSource> = {
-	mock: mockSource,
+	file: fileSource,
 	http: httpSource,
 };
 
@@ -51,7 +51,7 @@ type Library = {
 const WORDS_PER_MINUTE = 220;
 
 function pickSource(): ContentSource {
-	const name = String(import.meta.env.CONTENT_SOURCE || 'mock');
+	const name = String(import.meta.env.CONTENT_SOURCE || 'file');
 	const source = SOURCES[name];
 	if (!source) {
 		throw new Error(`Unknown CONTENT_SOURCE "${name}". Known: ${Object.keys(SOURCES).join(', ')}`);
@@ -134,11 +134,26 @@ async function buildLibrary(): Promise<Library> {
 	return { posts: fullPosts, authors, categories, games, tags };
 }
 
-// Build once per process; every page in a static build shares the result.
+// Build once and share across pages. Sources that report a version (the
+// file store does) are rebuilt when their content changes.
 let library: Promise<Library> | undefined;
-function getLibrary(): Promise<Library> {
+let libraryVersion: string | undefined;
+async function getLibrary(): Promise<Library> {
+	const source = pickSource();
+	if (source.getVersion) {
+		const version = await source.getVersion();
+		if (version !== libraryVersion) {
+			libraryVersion = version;
+			library = undefined;
+		}
+	}
 	library ??= buildLibrary();
-	return library;
+	try {
+		return await library;
+	} catch (error) {
+		library = undefined;
+		throw error;
+	}
 }
 
 export async function getPosts(): Promise<FullPost[]> {

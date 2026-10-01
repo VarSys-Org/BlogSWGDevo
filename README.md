@@ -1,8 +1,9 @@
 # SWG Devo Blog
 
 Gaming blog for the SWG Devo channel: guides, best settings, reviews, hardware and esports.
-Built with Astro as a fully static site (every page is real HTML at build time), with a
-content layer that lets any backend plug in later. It currently runs on mock data.
+Built with Astro: public pages are fully static HTML (best for SEO and speed), and an admin
+dashboard plus an MCP server edit the content. Content lives as JSON in `content/` until a
+real backend is chosen; the content layer lets any backend plug in later.
 
 ## Commands
 
@@ -12,15 +13,54 @@ content layer that lets any backend plug in later. It currently runs on mock dat
 | `npm run dev` | Dev server at `localhost:4321` |
 | `npm run build` | Type check, then build the static site into `dist/` |
 | `npm run preview` | Serve the built site |
+| `npm start` | Run the built Node server (public pages + `/admin` + `/api`) |
+| `npm run mcp` | Start the MCP server over stdio (for local AI agents) |
 | `npm run mock:covers` | Rebuild mock cover art, share image and icons in `public/images/` |
 
 Copy `.env.example` to `.env` and set `SITE_URL` before a production build. Canonical URLs,
 Open Graph tags, the sitemap, RSS and robots.txt are all built from it.
 
+## Admin dashboard (`/admin/`)
+
+1. Copy `.env.example` to `.env` and set `ADMIN_PASSWORD` (long and random).
+2. `npm run dev`, open `http://localhost:4321/admin/`, sign in.
+
+Screens: Dashboard (counts, average ranking score, posts to fix first), Posts, Categories,
+Games, Authors, Media, Site settings, Redirects. The Posts screen has three panes: list,
+editor and a live ranking pane (score, Google result preview, what to fix).
+
+- Saving writes the JSON in `content/`; the dev server shows it immediately.
+- New posts start as drafts. Drafts never appear on the public site.
+- Changing a post URL adds a redirect from the old one automatically.
+- Deletes move the item to `content/.trash/` (restore by moving the file back).
+- Categories, games and authors still used by posts cannot be deleted; renaming one updates every post.
+- Images are resized to 640/1200 WebP plus a 1200 JPG share image, and need alt text.
+
+To publish, build and deploy: commit and push `content/` and `public/uploads/`. Static hosting
+serves `dist/client/`; the admin and MCP endpoint need the Node server (`npm start`, with the
+same `.env` values set on the server, and `node --env-file=.env` if you use a file).
+
+## MCP server (AI agents)
+
+Same actions and checks as the admin. Tools:
+
+| Tool | Use |
+| --- | --- |
+| `blog_read` | `type`: posts, categories, games, authors, site, media, redirects, summary. Without `id`: compact list. With `id`: full item (posts include an SEO report). `fields: true`: what `blog_write` accepts |
+| `blog_write` | Create (no `id` + `data`), update (`id` + changed fields, `null` clears), delete (`id` + `delete: true`), reorder (`order`) |
+| `blog_upload` | `images: [{ alt, url or base64 or path }]` returns ready ImageRefs |
+| `blog_seo_check` | Score a saved post (`id`) or unsaved fields (`post`) and list what to fix |
+
+- **Local (stdio):** `.mcp.json` registers it for Claude Code in this folder. Elsewhere:
+  `claude mcp add swg-blog -- node "<path>/BlogSWGDevo/mcp/stdio.ts"`. Needs Node 22.18+.
+- **Remote (HTTP):** set `BLOG_MCP_KEY` on the server, then point clients at
+  `https://<site>/api/mcp/` with `Authorization: Bearer <key>`. Local file paths are refused
+  over HTTP.
+
 ## How content flows
 
 ```
-backend (mock | http | your adapter)
+backend (file = content/*.json | http | your adapter)
         |  4 calls: listPosts, listAuthors, listCategories, listGames
         v
 src/lib/content/schema.ts   <- the contract; every record is checked at build time
@@ -77,7 +117,8 @@ record and field, so broken data never reaches the live site.
 
 ## Before going live
 
-- Set `SITE_URL`, and replace the social links and channel URL in `src/config/site.ts`.
-- Replace mock authors and posts with real ones (mock data lives in `src/lib/content/mock/`).
-- Add the Google Search Console HTML tag to `src/components/SeoHead.astro`, submit
+- Set `SITE_URL`, and replace the social links and channel URL in /admin > Site settings.
+- Replace the sample authors and posts with real ones (in /admin, or the files in `content/`).
+- Set `ADMIN_PASSWORD` (and `BLOG_MCP_KEY` if you want remote MCP) on the server.
+- Paste the Google Search Console HTML-tag code in /admin > Site settings, submit
   `sitemap.xml`, then import the property into Bing Webmaster Tools.

@@ -4,7 +4,7 @@
 // in `./index.ts`, so no backend has to re-build that logic.
 //
 // To add a backend:
-//   1. Make a folder next to `mock/` and `http/` (e.g. `strapi/`).
+//   1. Make a folder next to `file/` and `http/` (e.g. `strapi/`).
 //   2. Export an object that matches `ContentSource`, mapping your API's
 //      fields onto the shapes in `./schema.ts`.
 //   3. Add it to `SOURCES` in `./index.ts` and set CONTENT_SOURCE=<name>.
@@ -17,4 +17,8 @@ export interface ContentSource {
 	listAuthors(): Promise<AuthorInput[]>;
 	listCategories(): Promise<CategoryInput[]>;
 	listGames(): Promise<GameInput[]>;
+	// Optional: a value that changes whenever content changes. When given,
+	// the site rebuilds its cached content as soon as the value moves, so
+	// edits show up without restarting the dev server.
+	getVersion?(): Promise<string>;
 }

@@ -1,0 +1,41 @@
+{
+  "slug": "fortnite-building-tips",
+  "title": "Fortnite Building Tips for Beginners: 7 Habits to Learn First",
+  "description": "Seven Fortnite building habits that make the biggest difference for new players: binds, ramps, walls, edits and practice routines that build muscle memory.",
+  "kind": "guide",
+  "category": "guides",
+  "tags": [
+    "Fortnite",
+    "Beginner",
+    "Building"
+  ],
+  "games": [
+    "fortnite"
+  ],
+  "author": "devo",
+  "publishedAt": "2026-08-28T13:00:00+05:30",
+  "cover": {
+    "src": "/images/posts/fortnite-building-tips-1200.webp",
+    "srcset": "/images/posts/fortnite-building-tips-640.webp 640w, /images/posts/fortnite-building-tips-1200.webp 1200w",
+    "shareSrc": "/images/posts/fortnite-building-tips-1200.jpg",
+    "alt": "Ramps and walls rising quickly in a building fight",
+    "width": 1200,
+    "height": 675
+  },
+  "level": "beginner",
+  "keyPoints": [
+    "Move build pieces to keys you can press without leaving movement keys.",
+    "Learn the 90s only after a wall plus ramp is automatic.",
+    "Practise edits in creative for 10 minutes before every session."
+  ],
+  "faq": [
+    {
+      "question": "Should I play Zero Build to learn Fortnite?",
+      "answer": "Zero Build is great for learning gunfights and rotations. If you want to compete in build modes later, add a short building practice in creative alongside it."
+    }
+  ],
+  "body": {
+    "format": "markdown",
+    "value": "**Short answer:** fix your keybinds first, then make \"wall then ramp\" automatic, then learn edits. Fancy techniques only work once the basics need no thought.\n\n## 1. Rebind your build keys\n\nPut wall, floor, stairs and roof on keys next to your movement keys, or on mouse side buttons. If you have to move your hand to build, you will build too late.\n\n## 2. Wall first, then ramp\n\nWhen you are shot, place a wall in front of you, then a ramp behind it. This one habit wins more fights for beginners than anything else.\n\n## 3. Take high ground carefully\n\nHeight helps, but a tall ramp with no walls is easy to shoot out from under you. Add walls on the sides as you climb.\n\n## 4. Use edits to peek\n\nEdit a window or a door into your wall to shoot, then reset the edit. Peeking from cover is safer than jumping out.\n\n## 5. Practise in short daily sessions\n\nTen focused minutes in a creative map every day builds muscle memory faster than one long session a week.\n\n## 6. Watch your materials\n\nDo not spend all your wood in one fight. Farm between fights so you always have enough to protect yourself.\n\n## 7. Review your deaths\n\nAfter every loss, ask one question: did I build too late, too little, or in the wrong place? Fix that one thing next match.\n"
+  }
+}

@@ -17,9 +17,8 @@ const games = (await getGames()).filter((game) => game.count > 0).sort((a, b) =>
 const tags = (await getTags()).slice(0, 12);
 const categories = await getCategories();
 
-const SHELVES = ['guides', 'hardware', 'mobile-gaming'];
 const shelves = await Promise.all(
-	SHELVES.map(async (slug) => ({
+	SITE.home.shelves.map(async (slug) => ({
 		category: categories.find((c) => c.slug === slug),
 		posts: (await getPostsInCategory(slug)).slice(0, 3),
 	})),
@@ -34,8 +33,8 @@ const shelves = await Promise.all(
 >
 	<div class="page-wrap">
 		<header class="home-head">
-			<span class="eyebrow">SWG Devo / Gaming blog</span>
-			<h1 class="home-title">Gaming guides that start with the answer</h1>
+			{SITE.home.eyebrow && <span class="eyebrow">{SITE.home.eyebrow}</span>}
+			<h1 class="home-title">{SITE.home.title}</h1>
 		</header>
 
 		{
@@ -54,10 +53,8 @@ const shelves = await Promise.all(
 
 		<div class="intro-band">
 			<div>
-				<h2 class="intro-title">Tested settings, not guesses</h2>
-				<p class="intro-text">
-					Every guide lists the game patch it was checked on and is tried on real PCs and phones first. When a patch changes something, the guide and its date change too.
-				</p>
+				<h2 class="intro-title">{SITE.home.introTitle}</h2>
+				<p class="intro-text">{SITE.home.introText}</p>
 			</div>
 			<a class="button button-ghost" href="/editorial-policy/">How we test</a>
 		</div>

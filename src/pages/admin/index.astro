@@ -1,0 +1,37 @@
+---
+// The admin dashboard. Server-rendered only (never part of the static
+// export), hidden from search engines, and locked behind ADMIN_PASSWORD.
+import '@fontsource-variable/space-grotesk/wght.css';
+import '@fontsource/ibm-plex-mono/latin-500.css';
+import '../../styles/global.css';
+import '../../styles/admin.css';
+import AdminApp from '../../admin/AdminApp';
+
+export const prerender = false;
+Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Admin | SWG Devo</title>
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<script is:inline>
+			(function () {
+				var saved = null;
+				try {
+					saved = localStorage.getItem('theme');
+				} catch (e) {}
+				var dark = saved ? saved === 'dark' : !window.matchMedia('(prefers-color-scheme: light)').matches;
+				document.documentElement.classList.toggle('dark', dark);
+			})();
+		</script>
+	</head>
+	<body class="adm-page">
+		<AdminApp client:only="react" />
+	</body>
+</html>

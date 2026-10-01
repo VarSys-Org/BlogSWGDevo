@@ -77,7 +77,7 @@ export const postSchema = z.object({
 	// Optional search-result title when the on-page headline is too long.
 	seoTitle: z.string().optional(),
 	description: z.string().min(1),
-	kind: z.enum(['article', 'guide', 'review', 'news', 'list']),
+	kind: z.enum(['article', 'guide', 'review', 'news', 'list']).default('article'),
 	category: slug,
 	tags: z.array(z.string()).default([]),
 	games: z.array(slug).default([]),
@@ -99,6 +99,47 @@ export const postSchema = z.object({
 	noindex: z.boolean().default(false),
 });
 
+const linkSchema = z.object({ label: z.string().min(1), href: z.string().min(1) });
+
+export const siteSchema = z.object({
+	name: z.string().min(1),
+	shortName: z.string().min(1),
+	tagline: z.string(),
+	description: z.string().max(200),
+	locale: z.string().default('en_IN'),
+	lang: z.string().default('en'),
+	themeColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+	defaultImage: z.string(),
+	logo: z.string(),
+	youtubeChannel: z.string().url(),
+	xHandle: z.string(),
+	social: z.array(
+		z.object({
+			label: z.string(),
+			url: z.string().url(),
+			icon: z.enum(['youtube', 'instagram', 'discord', 'x', 'reddit', 'whatsapp']),
+		}),
+	),
+	nav: z.array(linkSchema).max(8),
+	home: z.object({
+		eyebrow: z.string(),
+		title: z.string().min(1),
+		introTitle: z.string(),
+		introText: z.string(),
+		// Category slugs shown as rows on the home page, in order.
+		shelves: z.array(slug).max(6),
+	}),
+	cta: z.object({ title: z.string(), text: z.string() }),
+	postsPerPage: z.number().int().min(3).max(48),
+	minPostsToIndexTag: z.number().int().min(1).max(10),
+	// Search Console / Bing Webmaster HTML-tag verification codes (content value only).
+	verification: z.object({ google: z.string().default(''), bing: z.string().default('') }),
+});
+
+// Old URL path -> new URL path, filled in automatically when a post slug changes.
+export const redirectsSchema = z.record(z.string(), z.string());
+
+export type Site = z.infer<typeof siteSchema>;
 export type ImageRef = z.infer<typeof imageSchema>;
 export type Author = z.infer<typeof authorSchema>;
 export type Category = z.infer<typeof categorySchema>;

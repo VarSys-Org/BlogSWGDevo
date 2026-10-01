@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "swg-blog": {
+      "command": "node",
+      "args": ["mcp/stdio.ts"]
+    }
+  }
+}

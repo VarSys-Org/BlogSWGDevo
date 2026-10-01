@@ -59,6 +59,8 @@ const robots = props.noindex
 )}
 
 <meta name="theme-color" content={SITE.themeColor} />
+{SITE.verification.google && <meta name="google-site-verification" content={SITE.verification.google} />}
+{SITE.verification.bing && <meta name="msvalidate.01" content={SITE.verification.bing} />}
 <meta name="color-scheme" content="light dark" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

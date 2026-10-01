@@ -1,0 +1,62 @@
+{
+  "slug": "best-valorant-settings",
+  "title": "Best Valorant Settings for FPS and Visibility (2026 Guide)",
+  "seoTitle": "Best Valorant Settings for High FPS and Clarity (2026)",
+  "description": "The Valorant video, mouse and crosshair settings we use for high FPS and clear enemy visibility, with the reason behind each one. Tested on low and high-end PCs.",
+  "kind": "guide",
+  "category": "guides",
+  "tags": [
+    "Valorant",
+    "Settings",
+    "FPS boost",
+    "PC"
+  ],
+  "games": [
+    "valorant"
+  ],
+  "author": "devo",
+  "publishedAt": "2026-09-28T09:00:00+05:30",
+  "updatedAt": "2026-09-30T18:00:00+05:30",
+  "cover": {
+    "src": "/images/posts/best-valorant-settings-1200.webp",
+    "srcset": "/images/posts/best-valorant-settings-640.webp 640w, /images/posts/best-valorant-settings-1200.webp 1200w",
+    "shareSrc": "/images/posts/best-valorant-settings-1200.jpg",
+    "alt": "Valorant settings menu with graphics options highlighted",
+    "width": 1200,
+    "height": 675
+  },
+  "featured": true,
+  "level": "beginner",
+  "patch": "Live build, Sep 2026",
+  "keyPoints": [
+    "Set every graphics quality option to Low except Texture Quality on 8 GB+ GPUs.",
+    "Turn off Vignette, Bloom, Distortion and Cast Shadows for a cleaner image.",
+    "Use Fullscreen, not Windowed Fullscreen, and cap FPS a little above your monitor refresh rate.",
+    "Keep mouse sensitivity in the 0.25 to 0.45 range at 800 DPI as a starting point."
+  ],
+  "video": {
+    "youtubeId": "M7lc1UVf-VE",
+    "title": "Valorant settings walkthrough",
+    "description": "A full walkthrough of every Valorant setting covered in this guide.",
+    "uploadDate": "2026-09-27T12:00:00+05:30",
+    "duration": "PT11M42S"
+  },
+  "faq": [
+    {
+      "question": "Do low graphics settings give an advantage in Valorant?",
+      "answer": "Mostly yes. Low settings raise and steady your frame rate, and removing effects like bloom and vignette makes enemy outlines easier to read. Texture quality is the one setting that barely costs FPS, so you can keep it higher."
+    },
+    {
+      "question": "What is the best FPS cap for Valorant?",
+      "answer": "Cap a little above your monitor refresh rate, for example 150 on a 144 Hz screen. An uncapped frame rate can make frame times jumpy and heat up laptops without a visible gain."
+    },
+    {
+      "question": "Should I turn on NVIDIA Reflex in Valorant?",
+      "answer": "Yes, if your GPU supports it. Choose \"On + Boost\" when your GPU is the bottleneck, otherwise \"On\" is enough. It lowers system latency without costing image quality."
+    }
+  ],
+  "body": {
+    "format": "markdown",
+    "value": "**Short answer:** set everything to Low except Texture Quality, turn off every post-processing effect, play in Fullscreen and cap your FPS slightly above your refresh rate. The rest of this guide explains why, setting by setting, so you can adjust for your own PC.\n\n## Why settings matter more in Valorant\n\nValorant is decided by who sees and clicks first. Two things help you there: a **high, steady frame rate** (lower input delay and smoother tracking) and a **clean image** (enemy outlines stand out from the map). Almost every choice below trades a little prettiness for one of those two.\n\n## Video settings: General\n\n| Setting | Our pick | Why |\n| --- | --- | --- |\n| Display mode | Fullscreen | Lowest input delay on Windows |\n| Resolution | Native | Lower resolutions blur heads at range |\n| Frame rate limit | Refresh rate + 5 to 10 | Steadier frame times |\n| NVIDIA Reflex | On + Boost | Lower system latency |\n\nIf you play on a laptop, set **Limit FPS on Battery** to On so the game does not drain the battery in a few minutes.\n\n## Video settings: Graphics quality\n\n- **Multithreaded Rendering:** On. Turn it off only if you see stutter on a 4-core CPU.\n- **Material Quality, Detail Quality, UI Quality:** Low.\n- **Texture Quality:** Medium or High if your GPU has 8 GB or more. It costs very little FPS.\n- **Vignette:** Off. It darkens the edge of the screen where enemies peek from.\n- **Anti-aliasing:** MSAA 2x on mid-range PCs, None on very weak ones.\n- **Anisotropic Filtering:** 4x. Higher values cost frames for almost no gain.\n- **Bloom, Distortion, Cast Shadows:** Off.\n\n### What about Improve Clarity?\n\nImprove Clarity sharpens the image. It helps on 1080p screens and costs a few frames. Try it for two matches and keep it only if targets look crisper to you.\n\n## Crosshair settings that work for most players\n\nPick a color that never appears on the maps. **Cyan or bright green** with a thin black outline is a safe choice. Use a small static crosshair: inner lines only, length 4, thickness 2, offset 2, with movement and firing error turned off. A crosshair that grows when you move hides your target at the exact moment you need it.\n\n## Mouse sensitivity\n\nStart at **800 DPI with an in-game sensitivity of 0.3 to 0.4**. That gives roughly 40 to 55 cm per full turn, which suits most players who aim with their arm. Change it in small steps, play at least 50 deathmatch rounds before judging, and do not copy a pro's number without trying it first.\n\n## Windows settings that help\n\n1. Turn on **Game Mode** in Windows settings.\n2. Set your monitor to its highest refresh rate in Advanced display settings. Many 144 Hz monitors ship set to 60 Hz.\n3. Close overlays you do not use (browser, recording tools) while you play ranked.\n\n## How we tested\n\nWe checked these settings on two PCs: a budget build with a 6-core CPU and an entry-level GPU, and a high-end build. On the budget PC, moving from the default preset to these settings raised average FPS noticeably and, more importantly, removed most of the dips during fights. Your exact numbers will differ, so measure before and after with the in-game FPS counter.\n"
+  }
+}
