@@ -1,0 +1,39 @@
+---
+// Simple text pages: about, policies, contact. Trust pages like these are
+// part of how search engines judge whether a site is a real publisher.
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { makeBreadcrumbs } from '../lib/seo/schema';
+
+interface Props {
+	title: string;
+	heading: string;
+	description: string;
+	path: string;
+	eyebrow?: string;
+	updated?: string;
+	schema?: Record<string, unknown>[];
+}
+
+const { title, heading, description, path, eyebrow, updated, schema = [] } = Astro.props;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const crumbs = [
+	{ name: 'Home', path: '/' },
+	{ name: heading, path },
+];
+---
+
+<BaseLayout title={title} description={description} path={path} schema={[makeBreadcrumbs(crumbs, site), ...schema]}>
+	<div class="page-wrap">
+		<Breadcrumbs items={crumbs} />
+		<header class="listing-head">
+			{eyebrow && <span class="eyebrow">{eyebrow}</span>}
+			<h1 class="listing-title">{heading}</h1>
+			<p class="listing-intro">{description}</p>
+			{updated && <p class="listing-facts"><span>Last updated {updated}</span></p>}
+		</header>
+		<div class="prose page-prose">
+			<slot />
+		</div>
+	</div>
+</BaseLayout>

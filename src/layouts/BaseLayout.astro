@@ -1,0 +1,46 @@
+---
+import '@fontsource-variable/space-grotesk/wght.css';
+import '@fontsource/chakra-petch/latin-700.css';
+import '@fontsource/ibm-plex-mono/latin-500.css';
+import '../styles/global.css';
+
+import { SITE } from '../config/site';
+import SeoHead, { type SeoProps } from '../components/SeoHead.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { makeOrganization, makeWebsite } from '../lib/seo/schema';
+
+type Props = SeoProps;
+
+const props = Astro.props;
+const site = Astro.site ?? new URL(Astro.url.origin);
+// Organization + WebSite go on every page so any landing page links back to
+// the brand entity; pages add their own blocks after these.
+const schema = [makeOrganization(site), makeWebsite(site), ...(props.schema ?? [])];
+---
+
+<!doctype html>
+<html lang={SITE.lang} class="dark">
+	<head>
+		<script is:inline>
+			// Runs before paint so the page never flashes the wrong theme.
+			(function () {
+				var saved = null;
+				try {
+					saved = localStorage.getItem('theme');
+				} catch (e) {}
+				var dark = saved ? saved === 'dark' : !window.matchMedia('(prefers-color-scheme: light)').matches;
+				document.documentElement.classList.toggle('dark', dark);
+			})();
+		</script>
+		<SeoHead {...props} schema={schema} />
+	</head>
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+		<SiteHeader />
+		<main id="main" class="page-main">
+			<slot />
+		</main>
+		<SiteFooter />
+	</body>
+</html>

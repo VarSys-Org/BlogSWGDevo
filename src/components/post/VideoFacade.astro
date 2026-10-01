@@ -1,0 +1,48 @@
+---
+// Shows the YouTube thumbnail and loads the real player only on click.
+// A plain YouTube embed adds ~1 MB of script to every page view and hurts
+// page speed scores; the facade keeps that cost off until it is wanted.
+import type { Video } from '../../lib/content';
+import Icon from '../Icon.astro';
+
+interface Props {
+	video: Video;
+}
+
+const { video } = Astro.props;
+---
+
+<figure class="video">
+	<div class="video-frame" data-video-id={video.youtubeId} data-video-title={video.title}>
+		<img
+			src={`https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`}
+			alt=""
+			width="480"
+			height="360"
+			loading="lazy"
+			decoding="async"
+		/>
+		<button class="video-play" type="button" aria-label={`Play video: ${video.title}`}>
+			<span class="video-play-icon"><Icon name="play" /></span>
+		</button>
+	</div>
+	<figcaption class="video-caption">Watch: {video.title}</figcaption>
+</figure>
+
+<script>
+	for (const frame of document.querySelectorAll<HTMLElement>('[data-video-id]')) {
+		frame.querySelector('button')?.addEventListener(
+			'click',
+			() => {
+				const iframe = document.createElement('iframe');
+				iframe.src = `https://www.youtube-nocookie.com/embed/${frame.dataset.videoId}?autoplay=1&rel=0`;
+				iframe.title = frame.dataset.videoTitle ?? 'Video';
+				iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+				iframe.allowFullscreen = true;
+				frame.replaceChildren(iframe);
+				iframe.focus();
+			},
+			{ once: true },
+		);
+	}
+</script>

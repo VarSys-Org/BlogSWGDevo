@@ -1,0 +1,22 @@
+---
+// "In short" box at the top of the article: the direct answer first. Clear
+// summary lists are what search engines lift into featured snippets.
+interface Props {
+	points: string[];
+}
+
+const { points } = Astro.props;
+---
+
+{
+	points.length > 0 && (
+		<aside class="box key-points" aria-label="Key points">
+			<p class="box-title">In short</p>
+			<ul>
+				{points.map((point) => (
+					<li>{point}</li>
+				))}
+			</ul>
+		</aside>
+	)
+}

@@ -1,0 +1,50 @@
+---
+import { FOOTER_LINKS, SITE } from '../config/site';
+import BrandMark from './BrandMark.astro';
+import Icon, { type IconName } from './Icon.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<div class="page-wrap">
+		<div class="footer-grid">
+			<div class="footer-about">
+				<a class="brand" href="/" aria-label={`${SITE.name} home`}>
+					<BrandMark />
+					<span class="brand-name">SWG <b>Devo</b></span>
+				</a>
+				<p class="footer-text">{SITE.description}</p>
+				<div class="social-row">
+					{
+						SITE.social.map((item) => (
+							<a class="share-link" href={item.url} rel="me noopener" target="_blank" aria-label={`${SITE.name} on ${item.label}`}>
+								<Icon name={item.icon as IconName} />
+							</a>
+						))
+					}
+				</div>
+			</div>
+			<div class="footer-cols">
+				{
+					FOOTER_LINKS.map((group) => (
+						<nav aria-label={group.title}>
+							<h2 class="footer-heading">{group.title}</h2>
+							<ul class="footer-links">
+								{group.links.map((link) => (
+									<li>
+										<a href={link.href}>{link.label}</a>
+									</li>
+								))}
+							</ul>
+						</nav>
+					))
+				}
+			</div>
+		</div>
+		<div class="footer-base">
+			<span>&copy; {year} {SITE.name}. All rights reserved.</span>
+			<span>Game names and images belong to their owners.</span>
+		</div>
+	</div>
+</footer>

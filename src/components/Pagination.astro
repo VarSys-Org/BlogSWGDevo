@@ -1,0 +1,40 @@
+---
+// Plain links (no JS) so crawlers can reach every page of a listing.
+interface Props {
+	current: number;
+	total: number;
+	basePath: string; // e.g. "/blog/" -> "/blog/page/2/"
+}
+
+const { current, total, basePath } = Astro.props;
+const pageUrl = (n: number) => (n === 1 ? basePath : `${basePath}page/${n}/`);
+const numbers = Array.from({ length: total }, (_, i) => i + 1);
+---
+
+{
+	total > 1 && (
+		<nav aria-label="Pages">
+			<ul class="pager">
+				{current > 1 && (
+					<li>
+						<a href={pageUrl(current - 1)} rel="prev">
+							Previous
+						</a>
+					</li>
+				)}
+				{numbers.map((n) => (
+					<li>
+						{n === current ? <span aria-current="page">{n}</span> : <a href={pageUrl(n)}>{n}</a>}
+					</li>
+				))}
+				{current < total && (
+					<li>
+						<a href={pageUrl(current + 1)} rel="next">
+							Next
+						</a>
+					</li>
+				)}
+			</ul>
+		</nav>
+	)
+}

@@ -1,0 +1,27 @@
+---
+// FAQ answers are in the HTML (inside <details>), so crawlers read them
+// even while they are folded. The page also sends them as FAQPage JSON-LD.
+import type { Faq } from '../../lib/content';
+
+interface Props {
+	items: Faq[];
+}
+
+const { items } = Astro.props;
+---
+
+{
+	items.length > 0 && (
+		<section class="faq" aria-labelledby="faq-title">
+			<h2 class="faq-title" id="faq-title">
+				Questions players ask
+			</h2>
+			{items.map((item, index) => (
+				<details class="faq-item" open={index === 0}>
+					<summary>{item.question}</summary>
+					<p class="faq-answer">{item.answer}</p>
+				</details>
+			))}
+		</section>
+	)
+}

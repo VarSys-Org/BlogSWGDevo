@@ -1,0 +1,37 @@
+---
+import ListingLayout from '../../layouts/ListingLayout.astro';
+import { SITE } from '../../config/site';
+import { getPosts, splitPages, type FullPost } from '../../lib/content';
+
+export async function getStaticPaths() {
+	const pages = splitPages(await getPosts(), SITE.postsPerPage);
+	return pages.map((posts, index) => ({
+		params: { page: index === 0 ? undefined : `page/${index + 1}` },
+		props: { posts, page: index + 1, totalPages: pages.length },
+	}));
+}
+
+interface Props {
+	posts: FullPost[];
+	page: number;
+	totalPages: number;
+}
+
+const { posts, page, totalPages } = Astro.props;
+---
+
+<ListingLayout
+	heading="All posts"
+	eyebrow="Archive"
+	intro="Every guide, review and list on SWG Devo, newest first."
+	posts={posts}
+	page={page}
+	totalPages={totalPages}
+	basePath="/blog/"
+	crumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'All posts', path: '/blog/' },
+	]}
+	seoTitle="All Gaming Guides, Reviews and News"
+	seoDescription="Browse every SWG Devo gaming guide, settings walkthrough, review and top list, newest first."
+/>

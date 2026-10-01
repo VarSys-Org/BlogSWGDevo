@@ -1,0 +1,30 @@
+---
+// One image tag for every cover. Width and height are always set so the
+// page never jumps while images load (CLS). Only the main image of a page
+// is `eager`; everything else waits until it is near the screen.
+import type { ImageRef } from '../lib/content';
+
+interface Props {
+	image: ImageRef;
+	sizes?: string;
+	eager?: boolean;
+	frame?: boolean;
+	alt?: string;
+}
+
+const { image, sizes = '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw', eager = false, frame = false, alt } = Astro.props;
+---
+
+<div class:list={['cover', { 'hud-frame': frame }]}>
+	<img
+		src={image.src}
+		srcset={image.srcset}
+		sizes={image.srcset ? sizes : undefined}
+		alt={alt ?? image.alt}
+		width={image.width}
+		height={image.height}
+		loading={eager ? 'eager' : 'lazy'}
+		decoding={eager ? 'sync' : 'async'}
+		fetchpriority={eager ? 'high' : undefined}
+	/>
+</div>

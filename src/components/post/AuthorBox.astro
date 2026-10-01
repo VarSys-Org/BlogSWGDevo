@@ -1,0 +1,32 @@
+---
+// Who wrote this and why they know the topic. A real author with a profile
+// page is one of the clearest trust (E-E-A-T) signals a post can carry.
+import type { Author } from '../../lib/content';
+
+interface Props {
+	author: Author;
+}
+
+const { author } = Astro.props;
+const initials = author.name
+	.split(/\s+/)
+	.map((part) => part[0])
+	.join('')
+	.slice(0, 2)
+	.toUpperCase();
+---
+
+<section class="box author-box" aria-label="About the author">
+	{
+		author.avatar ? (
+			<img class="avatar" src={author.avatar.src} alt="" width="56" height="56" loading="lazy" decoding="async" />
+		) : (
+			<span class="avatar" aria-hidden="true">{initials}</span>
+		)
+	}
+	<div>
+		<p class="author-name"><a href={`/author/${author.slug}/`} rel="author">{author.name}</a></p>
+		<p class="author-role">{author.role}</p>
+		<p class="author-bio">{author.bio}</p>
+	</div>
+</section>

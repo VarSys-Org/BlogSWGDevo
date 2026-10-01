@@ -1,0 +1,60 @@
+---
+import ListingLayout from '../../layouts/ListingLayout.astro';
+import { getAuthors, getPostsByAuthor, type Author, type FullPost } from '../../lib/content';
+import { makePerson } from '../../lib/seo/schema';
+
+export async function getStaticPaths() {
+	const authors = await getAuthors();
+	return Promise.all(
+		authors.map(async (author) => ({
+			params: { slug: author.slug },
+			props: { author, posts: await getPostsByAuthor(author.slug) },
+		})),
+	);
+}
+
+interface Props {
+	author: Author;
+	posts: FullPost[];
+}
+
+const { author, posts } = Astro.props;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const basePath = `/author/${author.slug}/`;
+const profile = {
+	'@type': 'ProfilePage',
+	mainEntity: makePerson(author, site),
+};
+---
+
+<ListingLayout
+	heading={author.name}
+	eyebrow={author.role}
+	intro={author.bio}
+	facts={[`${posts.length} ${posts.length === 1 ? 'post' : 'posts'}`, ...author.expertise]}
+	posts={posts}
+	basePath={basePath}
+	crumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'About', path: '/about/' },
+		{ name: author.name, path: basePath },
+	]}
+	seoTitle={`${author.name}, ${author.role}`}
+	seoDescription={author.bio}
+	type="profile"
+	schema={[profile]}
+>
+	{
+		author.links.length > 0 && (
+			<ul class="chip-list" slot="after-heading" aria-label={`${author.name} elsewhere`}>
+				{author.links.map((link) => (
+					<li>
+						<a class="chip" href={link.url} rel="me noopener" target="_blank">
+							{link.label}
+						</a>
+					</li>
+				))}
+			</ul>
+		)
+	}
+</ListingLayout>

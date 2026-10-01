@@ -1,49 +1,155 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CoverImage from '../components/CoverImage.astro';
+import ChannelCta from '../components/ChannelCta.astro';
+import { SITE } from '../config/site';
+import { getCategories, getFeaturedPosts, getGames, getPosts, getPostsInCategory, getTags } from '../lib/content';
+import { makeItemList } from '../lib/seo/schema';
+
+const site = Astro.site ?? new URL(Astro.url.origin);
+const featured = await getFeaturedPosts(4);
+const [lead, ...sideStories] = featured;
+const shown = new Set(featured.map((post) => post.slug));
+const latest = (await getPosts()).filter((post) => !shown.has(post.slug)).slice(0, 6);
+const games = (await getGames()).filter((game) => game.count > 0).sort((a, b) => b.count - a.count);
+const tags = (await getTags()).slice(0, 12);
+const categories = await getCategories();
+
+const SHELVES = ['guides', 'hardware', 'mobile-gaming'];
+const shelves = await Promise.all(
+	SHELVES.map(async (slug) => ({
+		category: categories.find((c) => c.slug === slug),
+		posts: (await getPostsInCategory(slug)).slice(0, 3),
+	})),
+);
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
+<BaseLayout
+	description={SITE.description}
+	path="/"
+	preloadImage={lead ? { src: lead.cover.src, srcset: lead.cover.srcset } : undefined}
+	schema={[makeItemList('Featured posts', featured, site)]}
+>
+	<div class="page-wrap">
+		<header class="home-head">
+			<span class="eyebrow">SWG Devo / Gaming blog</span>
+			<h1 class="home-title">Gaming guides that start with the answer</h1>
+		</header>
+
+		{
+			lead && (
+				<section class="hero" aria-label="Featured posts">
+					<PostCard post={lead} look="lead" eager headingLevel={2} />
+					<div class="hero-more">
+						<p class="hero-side-title">Also trending</p>
+						{sideStories.map((post) => (
+							<PostCard post={post} look="row" headingLevel={3} />
+						))}
+					</div>
+				</section>
+			)
+		}
+
+		<div class="intro-band">
+			<div>
+				<h2 class="intro-title">Tested settings, not guesses</h2>
+				<p class="intro-text">
+					Every guide lists the game patch it was checked on and is tried on real PCs and phones first. When a patch changes something, the guide and its date change too.
+				</p>
+			</div>
+			<a class="button button-ghost" href="/editorial-policy/">How we test</a>
+		</div>
+
+		<div class="section home-split">
+			<section aria-labelledby="latest-title">
+				<SectionHead title="Latest" id="latest-title" linkHref="/blog/" linkLabel="All posts" />
+				<ul class="post-grid post-grid-wide">
+					{
+						latest.map((post) => (
+							<li>
+								<PostCard post={post} />
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<aside class="hero-side" aria-label="Browse">
+				<div class="box">
+					<p class="box-title">Game hubs</p>
+					<ul class="chip-list">
+						{
+							games.map((game) => (
+								<li>
+									<a class="chip" href={`/games/${game.slug}/`}>
+										{game.name} <span class="chip-count">{game.count}</span>
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+				<div class="box">
+					<p class="box-title">Popular topics</p>
+					<ul class="chip-list">
+						{
+							tags.map((tag) => (
+								<li>
+									<a class="chip" href={`/tag/${tag.slug}/`}>
+										#{tag.name}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</aside>
+		</div>
+
+		{
+			shelves.map(
+				({ category, posts }) =>
+					category &&
+					posts.length > 0 && (
+						<section class="section" aria-labelledby={`shelf-${category.slug}`}>
+							<SectionHead title={category.name} id={`shelf-${category.slug}`} linkHref={`/category/${category.slug}/`} />
+							<ul class="post-grid">
+								{posts.map((post) => (
+									<li>
+										<PostCard post={post} />
+									</li>
+								))}
+							</ul>
+						</section>
+					),
+			)
+		}
+
+		<section class="section" aria-labelledby="games-title">
+			<SectionHead title="Game hubs" id="games-title" linkHref="/games/" linkLabel="All games" />
+			<ul class="game-grid">
+				{
+					games.map((game) => (
+						<li>
+							<a class="game-card" href={`/games/${game.slug}/`}>
+								{game.cover && <CoverImage image={game.cover} alt="" sizes="(min-width: 1024px) 200px, 50vw" />}
+								<div class="game-card-body">
+									<h3 class="game-card-name">{game.name}</h3>
+									<p class="game-card-meta">
+										{game.count} {game.count === 1 ? 'post' : 'posts'}
+									</p>
+								</div>
+							</a>
+						</li>
+					))
+				}
 			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+		</section>
+
+		<div class="section">
+			<ChannelCta />
+		</div>
+	</div>
+</BaseLayout>

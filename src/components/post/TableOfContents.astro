@@ -1,0 +1,39 @@
+---
+// Jump links to every h2/h3. Google often shows these as "jump to" links
+// under the result, and they help readers skip to the part they need.
+import type { Heading } from '../../lib/content';
+
+interface Props {
+	headings: Heading[];
+	collapsible?: boolean;
+}
+
+const { headings, collapsible = false } = Astro.props;
+---
+
+{
+	headings.length > 1 &&
+		(collapsible ? (
+			<details class="box toc-mobile">
+				<summary>On this page</summary>
+				<ol class="toc-list">
+					{headings.map((h) => (
+						<li class:list={{ 'toc-sub': h.depth === 3 }}>
+							<a href={`#${h.id}`}>{h.text}</a>
+						</li>
+					))}
+				</ol>
+			</details>
+		) : (
+			<nav class="box" aria-label="On this page">
+				<p class="box-title">On this page</p>
+				<ol class="toc-list">
+					{headings.map((h) => (
+						<li class:list={{ 'toc-sub': h.depth === 3 }}>
+							<a href={`#${h.id}`}>{h.text}</a>
+						</li>
+					))}
+				</ol>
+			</nav>
+		))
+}

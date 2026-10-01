@@ -1,0 +1,96 @@
+---
+// Everything search engines and social apps read from <head>. Every page
+// passes its own title, description, image and canonical path; the rest
+// comes from the site config so it cannot drift between pages.
+import { SITE } from '../config/site';
+import { clipText, makeTitle } from '../lib/seo/meta';
+import { makeGraph, toUrl } from '../lib/seo/schema';
+
+export interface SeoProps {
+	title?: string;
+	description?: string;
+	image?: string;
+	imageAlt?: string;
+	path?: string;
+	type?: 'website' | 'article' | 'profile';
+	noindex?: boolean;
+	schema?: Record<string, unknown>[];
+	prevPath?: string;
+	nextPath?: string;
+	article?: {
+		publishedAt: string;
+		modifiedAt: string;
+		section: string;
+		tags: string[];
+		authorName: string;
+	};
+	preloadImage?: { src: string; srcset?: string };
+}
+
+const props = Astro.props as SeoProps;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const fullTitle = makeTitle(props.title);
+const description = clipText(props.description ?? SITE.description);
+const canonical = toUrl(props.path ?? Astro.url.pathname, site);
+const image = toUrl(props.image ?? SITE.defaultImage, site);
+const robots = props.noindex
+	? 'noindex, follow'
+	: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={robots} />
+{props.prevPath && <link rel="prev" href={toUrl(props.prevPath, site)} />}
+{props.nextPath && <link rel="next" href={toUrl(props.nextPath, site)} />}
+
+{props.preloadImage && (
+	<link
+		rel="preload"
+		as="image"
+		href={props.preloadImage.src}
+		imagesrcset={props.preloadImage.srcset}
+		imagesizes="(min-width: 1024px) 860px, 100vw"
+		fetchpriority="high"
+	/>
+)}
+
+<meta name="theme-color" content={SITE.themeColor} />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="alternate" type="application/rss+xml" title={`${SITE.name} RSS`} href={toUrl('/rss.xml', site)} />
+<link rel="sitemap" type="application/xml" href={toUrl('/sitemap.xml', site)} />
+<link rel="preconnect" href="https://i.ytimg.com" crossorigin />
+
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content={SITE.locale} />
+<meta property="og:type" content={props.type ?? 'website'} />
+<meta property="og:title" content={props.title ?? fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={image} />
+<meta property="og:image:alt" content={props.imageAlt ?? SITE.name} />
+{
+	props.article && (
+		<>
+			<meta property="article:published_time" content={props.article.publishedAt} />
+			<meta property="article:modified_time" content={props.article.modifiedAt} />
+			<meta property="article:section" content={props.article.section} />
+			<meta property="article:author" content={props.article.authorName} />
+			{props.article.tags.map((tag) => <meta property="article:tag" content={tag} />)}
+		</>
+	)
+}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content={SITE.xHandle} />
+<meta name="twitter:title" content={props.title ?? fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+
+{props.schema && props.schema.length > 0 && <script type="application/ld+json" set:html={makeGraph(props.schema)} />}

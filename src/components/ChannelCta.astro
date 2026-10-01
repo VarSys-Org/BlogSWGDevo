@@ -1,0 +1,73 @@
+---
+// Subscribe block: YouTube channel plus an email sign-up. The form posts to
+// PUBLIC_SIGNUP_URL when the backend is ready (any endpoint that accepts
+// JSON `{ email }`). Until then it tells the reader sign-up opens soon.
+import { SITE } from '../config/site';
+import Icon from './Icon.astro';
+
+const signupUrl = import.meta.env.PUBLIC_SIGNUP_URL ?? '';
+---
+
+<section class="cta" aria-labelledby="cta-title">
+	<div>
+		<h2 class="cta-title" id="cta-title">New guide every week</h2>
+		<p class="cta-text">
+			Every SWG Devo video gets a written guide here with the exact settings. Subscribe on YouTube or get new guides by email.
+		</p>
+		<div class="cta-actions">
+			<a class="button" href={SITE.youtubeChannel} target="_blank" rel="noopener">
+				<Icon name="youtube" /> Subscribe on YouTube
+			</a>
+			<a class="button button-ghost" href="/rss.xml"><Icon name="rss" /> RSS feed</a>
+		</div>
+	</div>
+	<form class="signup" method="post" action={signupUrl || undefined} data-signup data-endpoint={signupUrl}>
+		<label class="signup-label" for="signup-email">Email updates</label>
+		<div class="signup-row">
+			<input
+				class="input"
+				id="signup-email"
+				name="email"
+				type="email"
+				autocomplete="email"
+				inputmode="email"
+				placeholder="you@example.com"
+				required
+			/>
+			<button class="button" type="submit">Get new guides</button>
+		</div>
+		<p class="form-note" role="status" data-signup-note>One email a week. Unsubscribe any time.</p>
+	</form>
+</section>
+
+<script>
+	for (const form of document.querySelectorAll<HTMLFormElement>('[data-signup]')) {
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			const note = form.querySelector<HTMLElement>('[data-signup-note]');
+			const show = (text: string, state: 'ok' | 'error' | '') => {
+				if (!note) return;
+				note.textContent = text;
+				note.dataset.state = state;
+			};
+			const email = new FormData(form).get('email');
+			const endpoint = form.dataset.endpoint;
+			if (!endpoint) {
+				show('Email sign-up opens soon. Subscribe on YouTube to get every new guide now.', '');
+				return;
+			}
+			try {
+				const res = await fetch(endpoint, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email }),
+				});
+				if (!res.ok) throw new Error(String(res.status));
+				form.reset();
+				show('You are in. Check your inbox to confirm.', 'ok');
+			} catch {
+				show('Sign-up did not go through. Check your email address and try again.', 'error');
+			}
+		});
+	}
+</script>

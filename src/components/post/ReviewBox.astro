@@ -1,0 +1,39 @@
+---
+// Review verdict with a segmented "health bar" score meter. The score,
+// pros and cons here are the same values sent in the Review JSON-LD.
+import type { Review } from '../../lib/content';
+
+interface Props {
+	review: Review;
+	gameName: string;
+}
+
+const { review, gameName } = Astro.props;
+const band = review.score >= 7.5 ? 'score-good' : review.score >= 5 ? 'score-mid' : 'score-low';
+const cells = Array.from({ length: 10 }, (_, i) => {
+	const fill = review.score - i;
+	return fill >= 1 ? 'score-cell-on' : fill >= 0.5 ? 'score-cell-half' : '';
+});
+---
+
+<section class:list={['box', 'review-box', band]} aria-labelledby="verdict-title">
+	<p class="box-title" id="verdict-title">Verdict: {gameName}</p>
+	<div class="score-row">
+		<p class="score-number" aria-label={`Score ${review.score} out of 10`}>{review.score}<small>/10</small></p>
+		<ol class="score-meter" aria-hidden="true">
+			{cells.map((state) => <li class:list={['score-cell', state]} />)}
+		</ol>
+	</div>
+	<p class="verdict">{review.verdict}</p>
+	<div class="pros-cons">
+		<div class="pros">
+			<h3>Good</h3>
+			<ul>{review.pros.map((item) => <li>{item}</li>)}</ul>
+		</div>
+		<div class="cons">
+			<h3>Not so good</h3>
+			<ul>{review.cons.map((item) => <li>{item}</li>)}</ul>
+		</div>
+	</div>
+	<p class="tested-on">Played on: {review.testedOn}</p>
+</section>

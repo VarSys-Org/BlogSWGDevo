@@ -1,0 +1,45 @@
+---
+// The post "HUD": author, dates, read time, level and the game patch the
+// guide was checked on. Visible dates and patch info tell readers (and
+// search engines) how fresh the advice is.
+import type { FullPost } from '../../lib/content';
+import { showDate } from '../../lib/seo/meta';
+
+interface Props {
+	post: FullPost;
+}
+
+const { post } = Astro.props;
+const changed = post.updatedAt && post.updatedAt !== post.publishedAt;
+---
+
+<ul class="hud-strip" aria-label="Post details">
+	<li class="hud-item">
+		<span class="hud-key">By</span>
+		<span class="hud-value"><a href={`/author/${post.authorInfo.slug}/`} rel="author">{post.authorInfo.name}</a></span>
+	</li>
+	<li class="hud-item">
+		<span class="hud-key">{changed ? 'Updated' : 'Published'}</span>
+		<span class="hud-value"><time datetime={post.lastChanged}>{showDate(post.lastChanged)}</time></span>
+	</li>
+	<li class="hud-item">
+		<span class="hud-key">Read</span>
+		<span class="hud-value">{post.readMinutes} min</span>
+	</li>
+	{
+		post.level && (
+			<li class="hud-item">
+				<span class="hud-key">Level</span>
+				<span class="hud-value hud-value-level">{post.level}</span>
+			</li>
+		)
+	}
+	{
+		post.patch && (
+			<li class="hud-item">
+				<span class="hud-key">Tested on</span>
+				<span class="hud-value">{post.patch}</span>
+			</li>
+		)
+	}
+</ul>

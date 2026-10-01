@@ -1,0 +1,48 @@
+---
+// Share links are plain URLs: no third-party scripts, no tracking pixels,
+// no effect on page speed.
+import Icon from '../Icon.astro';
+
+interface Props {
+	url: string;
+	title: string;
+}
+
+const { url, title } = Astro.props;
+const u = encodeURIComponent(url);
+const t = encodeURIComponent(title);
+const links = [
+	{ label: 'WhatsApp', icon: 'whatsapp', href: `https://wa.me/?text=${t}%20${u}` },
+	{ label: 'X', icon: 'x', href: `https://x.com/intent/post?url=${u}&text=${t}` },
+	{ label: 'Reddit', icon: 'reddit', href: `https://www.reddit.com/submit?url=${u}&title=${t}` },
+] as const;
+---
+
+<div class="share-row">
+	<span class="share-label">Share</span>
+	{
+		links.map((link) => (
+			<a class="share-link" href={link.href} target="_blank" rel="noopener nofollow" aria-label={`Share on ${link.label}`}>
+				<Icon name={link.icon} />
+			</a>
+		))
+	}
+	<button class="share-link" type="button" data-copy-link={url} aria-label="Copy link">
+		<Icon name="link" />
+	</button>
+	<span class="copy-note" role="status" data-copy-note></span>
+</div>
+
+<script>
+	for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy-link]')) {
+		button.addEventListener('click', async () => {
+			const note = button.parentElement?.querySelector('[data-copy-note]');
+			try {
+				await navigator.clipboard.writeText(button.dataset.copyLink ?? location.href);
+				if (note) note.textContent = 'Link copied';
+			} catch {
+				if (note) note.textContent = 'Copy the address bar link to share';
+			}
+		});
+	}
+</script>

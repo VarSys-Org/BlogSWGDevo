@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { getFeaturedPosts } from '../lib/content';
+
+const popular = await getFeaturedPosts(3);
+---
+
+<BaseLayout title="Page not found" description="This page does not exist. Search the guides or pick a popular post." noindex>
+	<div class="page-wrap">
+		<section class="lost">
+			<p class="lost-code">404</p>
+			<h1 class="listing-title">This page respawned somewhere else</h1>
+			<p class="listing-intro">The link may be old or mistyped. Search for the guide you wanted, or start from a popular post.</p>
+			<div class="cta-actions">
+				<a class="button" href="/search/">Search guides</a>
+				<a class="button button-ghost" href="/">Go to home</a>
+			</div>
+		</section>
+		<section class="section" aria-labelledby="popular-title">
+			<SectionHead title="Popular right now" id="popular-title" />
+			<ul class="post-grid">
+				{
+					popular.map((post) => (
+						<li>
+							<PostCard post={post} />
+						</li>
+					))
+				}
+			</ul>
+		</section>
+	</div>
+</BaseLayout>

@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CoverImage from '../../components/CoverImage.astro';
+import PostCard from '../../components/PostCard.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import ChannelCta from '../../components/ChannelCta.astro';
+import HudStrip from '../../components/post/HudStrip.astro';
+import TableOfContents from '../../components/post/TableOfContents.astro';
+import KeyPoints from '../../components/post/KeyPoints.astro';
+import ReviewBox from '../../components/post/ReviewBox.astro';
+import VideoFacade from '../../components/post/VideoFacade.astro';
+import FaqList from '../../components/post/FaqList.astro';
+import AuthorBox from '../../components/post/AuthorBox.astro';
+import ShareLinks from '../../components/post/ShareLinks.astro';
+import { getPosts, getRelatedPosts, type FullPost } from '../../lib/content';
+import { makeArticle, makeBreadcrumbs, toUrl } from '../../lib/seo/schema';
+
+export async function getStaticPaths() {
+	const posts = await getPosts();
+	return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+interface Props {
+	post: FullPost;
+}
+
+const { post } = Astro.props;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const related = await getRelatedPosts(post, 3);
+const crumbs = [
+	{ name: 'Home', path: '/' },
+	{ name: post.categoryInfo.name, path: `/category/${post.category}/` },
+	{ name: post.title, path: post.url },
+];
+const lead = post.gameList[0];
+---
+
+<BaseLayout
+	title={post.seoTitle ?? post.title}
+	description={post.description}
+	path={post.url}
+	image={post.cover.shareSrc ?? post.cover.src}
+	imageAlt={post.cover.alt}
+	type="article"
+	noindex={post.noindex}
+	preloadImage={{ src: post.cover.src, srcset: post.cover.srcset }}
+	article={{
+		publishedAt: post.publishedAt,
+		modifiedAt: post.lastChanged,
+		section: post.categoryInfo.name,
+		tags: post.tagList.map((tag) => tag.name),
+		authorName: post.authorInfo.name,
+	}}
+	schema={[makeBreadcrumbs(crumbs, site), ...makeArticle(post, site)]}
+>
+	<article class="page-wrap">
+		<Breadcrumbs items={crumbs} />
+
+		<header class="post-head">
+			<a class="eyebrow" href={`/category/${post.category}/`}>
+				{post.categoryInfo.name}{lead ? ` / ${lead.name}` : ''}
+			</a>
+			<h1 class="post-title">{post.title}</h1>
+			<p class="post-dek">{post.description}</p>
+			<HudStrip post={post} />
+		</header>
+
+		<div class="post-cover">
+			<CoverImage image={post.cover} eager frame sizes="(min-width: 1320px) 1240px, 100vw" />
+		</div>
+
+		<div class="post-layout">
+			<div class="post-article">
+				<KeyPoints points={post.keyPoints} />
+				{post.review && <ReviewBox review={post.review} gameName={lead?.name ?? post.title} />}
+				<TableOfContents headings={post.headings} collapsible />
+				{post.video && <VideoFacade video={post.video} />}
+
+				<div class="prose" set:html={post.html} />
+
+				<FaqList items={post.faq} />
+
+				<footer class="post-foot">
+					{
+						post.gameList.length > 0 && (
+							<ul class="chip-list" aria-label="Games in this post">
+								{post.gameList.map((game) => (
+									<li>
+										<a class="chip" href={`/games/${game.slug}/`}>
+											{game.name} hub
+										</a>
+									</li>
+								))}
+							</ul>
+						)
+					}
+					<ul class="chip-list" aria-label="Tags">
+						{
+							post.tagList.map((tag) => (
+								<li>
+									<a class="chip" href={`/tag/${tag.slug}/`} rel="tag">
+										#{tag.name}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+					<ShareLinks url={toUrl(post.url, site)} title={post.title} />
+				</footer>
+
+				<AuthorBox author={post.authorInfo} />
+			</div>
+
+			<aside class="post-aside" aria-label="Article tools">
+				<div class="aside-sticky">
+					<TableOfContents headings={post.headings} />
+					{
+						related.length > 0 && (
+							<div class="box">
+								<p class="box-title">Read next</p>
+								<ul class="next-list">
+									{related.slice(0, 3).map((item) => (
+										<li>
+											<a href={item.url}>{item.title}</a>
+										</li>
+									))}
+								</ul>
+							</div>
+						)
+					}
+				</div>
+			</aside>
+		</div>
+
+		{
+			related.length > 0 && (
+				<section class="section" aria-labelledby="related-title">
+					<SectionHead title="Keep reading" id="related-title" linkHref={`/category/${post.category}/`} linkLabel={`More ${post.categoryInfo.name}`} />
+					<ul class="post-grid">
+						{related.map((item) => (
+							<li>
+								<PostCard post={item} />
+							</li>
+						))}
+					</ul>
+				</section>
+			)
+		}
+
+		<div class="section">
+			<ChannelCta />
+		</div>
+	</article>
+</BaseLayout>

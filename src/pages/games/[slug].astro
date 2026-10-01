@@ -1,0 +1,52 @@
+---
+// Game hub: one page per game that links every post about it. Hubs like
+// this build topical authority, which is how a site ranks for a game's
+// whole cluster of searches instead of one keyword at a time.
+import ListingLayout from '../../layouts/ListingLayout.astro';
+import { getGames, getPostsForGame, type FullPost, type Game } from '../../lib/content';
+import { makeGameHub } from '../../lib/seo/schema';
+
+export async function getStaticPaths() {
+	const games = await getGames();
+	return Promise.all(
+		games.map(async (game) => ({
+			params: { slug: game.slug },
+			props: { game, posts: await getPostsForGame(game.slug) },
+		})),
+	);
+}
+
+interface Props {
+	game: Game & { count: number };
+	posts: FullPost[];
+}
+
+const { game, posts } = Astro.props;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const basePath = `/games/${game.slug}/`;
+const facts = [
+	game.genres.join(', '),
+	game.platforms.join(', '),
+	game.developer ? `By ${game.developer}` : '',
+	game.releaseYear ? `Released ${game.releaseYear}` : '',
+].filter(Boolean);
+---
+
+<ListingLayout
+	heading={`${game.name} guides, settings and reviews`}
+	eyebrow="Game hub"
+	intro={`${game.description} Here is every SWG Devo guide, settings walkthrough and review for ${game.name}.`}
+	facts={facts}
+	posts={posts}
+	basePath={basePath}
+	crumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'Games', path: '/games/' },
+		{ name: game.name, path: basePath },
+	]}
+	seoTitle={`${game.name} Guides, Best Settings and Tips`}
+	seoDescription={`${game.name} guides, best settings, tips and reviews from SWG Devo, all in one place.`}
+	image={game.cover?.shareSrc}
+	noindex={posts.length === 0}
+	schema={makeGameHub(game, posts, site)}
+/>

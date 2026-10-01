@@ -1,0 +1,37 @@
+---
+import type { FullPost } from '../lib/content';
+import { showDate } from '../lib/seo/meta';
+import CoverImage from './CoverImage.astro';
+
+interface Props {
+	post: FullPost;
+	look?: 'standard' | 'lead' | 'row';
+	eager?: boolean;
+	headingLevel?: 2 | 3;
+}
+
+const { post, look = 'standard', eager = false, headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const sizes =
+	look === 'lead'
+		? '(min-width: 1024px) 860px, (min-width: 768px) 58vw, 100vw'
+		: look === 'row'
+			? '180px'
+			: '(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw';
+---
+
+<article class:list={['card', { 'card-lead': look === 'lead', 'card-row': look === 'row' }]}>
+	<CoverImage image={post.cover} sizes={sizes} eager={eager} frame={look === 'lead'} alt="" />
+	{post.review && look !== 'row' && <span class="card-score" aria-label={`Score ${post.review.score} out of 10`}>{post.review.score}/10</span>}
+	<div class="card-body">
+		<span class="eyebrow">{post.categoryInfo.name}{post.gameList[0] ? ` / ${post.gameList[0].name}` : ''}</span>
+		<Heading class="card-title">
+			<a href={post.url}>{post.title}</a>
+		</Heading>
+		{look !== 'row' && <p class="card-text">{post.description}</p>}
+		<div class="card-foot">
+			<time datetime={post.publishedAt}>{showDate(post.publishedAt)}</time>
+			<span>{post.readMinutes} min read</span>
+		</div>
+	</div>
+</article>

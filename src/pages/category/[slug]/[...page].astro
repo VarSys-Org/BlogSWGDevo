@@ -1,0 +1,50 @@
+---
+import ListingLayout from '../../../layouts/ListingLayout.astro';
+import { SITE } from '../../../config/site';
+import { getCategories, getPostsInCategory, splitPages, type Category, type FullPost } from '../../../lib/content';
+import { makeCollectionPage } from '../../../lib/seo/schema';
+
+export async function getStaticPaths() {
+	const categories = await getCategories();
+	const groups = await Promise.all(
+		categories.map(async (category) => {
+			const pages = splitPages(await getPostsInCategory(category.slug), SITE.postsPerPage);
+			return pages.map((posts, index) => ({
+				params: { slug: category.slug, page: index === 0 ? undefined : `page/${index + 1}` },
+				props: { category, posts, page: index + 1, totalPages: pages.length },
+			}));
+		}),
+	);
+	return groups.flat();
+}
+
+interface Props {
+	category: Category & { count: number };
+	posts: FullPost[];
+	page: number;
+	totalPages: number;
+}
+
+const { category, posts, page, totalPages } = Astro.props;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const basePath = `/category/${category.slug}/`;
+---
+
+<ListingLayout
+	heading={category.name}
+	eyebrow="Category"
+	intro={category.intro || category.description}
+	facts={[`${category.count} ${category.count === 1 ? 'post' : 'posts'}`]}
+	posts={posts}
+	page={page}
+	totalPages={totalPages}
+	basePath={basePath}
+	crumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: category.name, path: basePath },
+	]}
+	seoTitle={category.seoTitle ?? category.name}
+	seoDescription={category.description}
+	noindex={category.count === 0}
+	schema={[makeCollectionPage(category, posts, basePath, site)]}
+/>

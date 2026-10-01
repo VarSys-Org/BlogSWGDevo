@@ -1,0 +1,27 @@
+---
+// Visible breadcrumbs. The same list is sent as BreadcrumbList JSON-LD by
+// the page, so search results show the path instead of a raw URL.
+interface Props {
+	items: { name: string; path: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="crumbs" aria-label="Breadcrumb">
+	<ol>
+		{
+			items.map((item, index) =>
+				index === items.length - 1 ? (
+					<li>
+						<span aria-current="page">{item.name}</span>
+					</li>
+				) : (
+					<li>
+						<a href={item.path}>{item.name}</a>
+					</li>
+				),
+			)
+		}
+	</ol>
+</nav>

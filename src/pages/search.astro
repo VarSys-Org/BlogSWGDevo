@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import { getTags } from '../lib/content';
+
+// Search results are `noindex`: they are thin, endless near-duplicates.
+const tags = (await getTags()).slice(0, 10);
+---
+
+<BaseLayout
+	title="Search"
+	description="Search every SWG Devo gaming guide, review and list."
+	path="/search/"
+	noindex
+>
+	<div class="page-wrap">
+		<Breadcrumbs
+			items={[
+				{ name: 'Home', path: '/' },
+				{ name: 'Search', path: '/search/' },
+			]}
+		/>
+		<header class="listing-head">
+			<span class="eyebrow">Search</span>
+			<h1 class="listing-title">Find a guide</h1>
+			<form class="search-box" role="search" action="/search/" method="get" data-search-form>
+				<label class="sr-only" for="search-input">Search posts</label>
+				<input
+					class="input"
+					id="search-input"
+					name="q"
+					type="search"
+					placeholder="Try: valorant settings, minecraft, monitor"
+					autocomplete="off"
+					enterkeyhint="search"
+				/>
+				<button class="button" type="submit"><Icon name="search" /> Search</button>
+			</form>
+			<ul class="chip-list" aria-label="Popular topics">
+				{
+					tags.map((tag) => (
+						<li>
+							<a class="chip" href={`/tag/${tag.slug}/`}>
+								#{tag.name}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</header>
+
+		<p class="search-count" role="status" data-search-count></p>
+		<ol class="search-results" data-search-results></ol>
+		<noscript><p class="empty-state">Search needs JavaScript. Browse <a href="/blog/">all posts</a> instead.</p></noscript>
+	</div>
+</BaseLayout>
+
+<script>
+	type Row = { u: string; t: string; d: string; c: string; k: string; p: string };
+
+	const input = document.querySelector<HTMLInputElement>('#search-input');
+	const form = document.querySelector<HTMLFormElement>('[data-search-form]');
+	const list = document.querySelector<HTMLOListElement>('[data-search-results]');
+	const count = document.querySelector<HTMLElement>('[data-search-count]');
+	let rows: Row[] | null = null;
+
+	async function loadRows(): Promise<Row[]> {
+		if (rows) return rows;
+		const res = await fetch('/search-index.json');
+		rows = (await res.json()) as Row[];
+		return rows;
+	}
+
+	function scoreRow(row: Row, words: string[]): number {
+		const title = row.t.toLowerCase();
+		const rest = `${row.d} ${row.k} ${row.c}`.toLowerCase();
+		let score = 0;
+		for (const word of words) {
+			if (title.includes(word)) score += 3;
+			else if (rest.includes(word)) score += 1;
+			else return 0;
+		}
+		return score;
+	}
+
+	function showResults(found: Row[], query: string) {
+		if (!list || !count) return;
+		list.replaceChildren();
+		if (!query) {
+			count.textContent = '';
+			return;
+		}
+		count.textContent = found.length
+			? `${found.length} ${found.length === 1 ? 'result' : 'results'} for "${query}"`
+			: `No posts match "${query}". Try a game name or a shorter word.`;
+		for (const row of found) {
+			const item = document.createElement('li');
+			const link = document.createElement('a');
+			link.className = 'search-hit';
+			link.href = row.u;
+			const label = document.createElement('span');
+			label.className = 'eyebrow';
+			label.textContent = row.c;
+			const title = document.createElement('p');
+			title.className = 'search-hit-title';
+			title.textContent = row.t;
+			const text = document.createElement('p');
+			text.className = 'search-hit-text';
+			text.textContent = row.d;
+			link.append(label, title, text);
+			item.append(link);
+			list.append(item);
+		}
+	}
+
+	async function runSearch(query: string) {
+		const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+		if (!words.length) return showResults([], '');
+		try {
+			const all = await loadRows();
+			const found = all
+				.map((row) => ({ row, score: scoreRow(row, words) }))
+				.filter((item) => item.score > 0)
+				.sort((a, b) => b.score - a.score || b.row.p.localeCompare(a.row.p))
+				.map((item) => item.row);
+			showResults(found, query);
+		} catch {
+			if (count) count.textContent = 'Search could not load. Refresh the page or browse all posts.';
+		}
+	}
+
+	const start = new URLSearchParams(location.search).get('q') ?? '';
+	if (input) {
+		input.value = start;
+		if (!start) input.focus();
+	}
+	runSearch(start);
+
+	let timer: number | undefined;
+	input?.addEventListener('input', () => {
+		window.clearTimeout(timer);
+		timer = window.setTimeout(() => {
+			const query = input.value.trim();
+			const url = new URL(location.href);
+			if (query) url.searchParams.set('q', query);
+			else url.searchParams.delete('q');
+			history.replaceState(null, '', url);
+			runSearch(query);
+		}, 150);
+	});
+	form?.addEventListener('submit', (event) => {
+		event.preventDefault();
+		runSearch(input?.value.trim() ?? '');
+	});
+</script>

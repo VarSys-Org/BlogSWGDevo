@@ -1,0 +1,105 @@
+---
+// Shared shell for every list of posts: all posts, a category, a tag, a game
+// hub or an author. Page 2+ get their own title and canonical so each page
+// is a distinct, indexable URL rather than a duplicate of page 1.
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Pagination from '../components/Pagination.astro';
+import PostCard from '../components/PostCard.astro';
+import ChannelCta from '../components/ChannelCta.astro';
+import type { FullPost } from '../lib/content';
+import { makeBreadcrumbs } from '../lib/seo/schema';
+
+interface Props {
+	heading: string;
+	eyebrow?: string;
+	intro?: string;
+	facts?: string[];
+	posts: FullPost[];
+	page?: number;
+	totalPages?: number;
+	basePath: string;
+	crumbs: { name: string; path: string }[];
+	seoTitle: string;
+	seoDescription: string;
+	image?: string;
+	noindex?: boolean;
+	schema?: Record<string, unknown>[];
+	type?: 'website' | 'profile';
+}
+
+const {
+	heading,
+	eyebrow,
+	intro,
+	facts = [],
+	posts,
+	page = 1,
+	totalPages = 1,
+	basePath,
+	crumbs,
+	seoTitle,
+	seoDescription,
+	image,
+	noindex,
+	schema = [],
+	type,
+} = Astro.props;
+
+const site = Astro.site ?? new URL(Astro.url.origin);
+const pagePath = page === 1 ? basePath : `${basePath}page/${page}/`;
+const pageSuffix = page > 1 ? ` - Page ${page}` : '';
+const allCrumbs = page > 1 ? [...crumbs, { name: `Page ${page}`, path: pagePath }] : crumbs;
+const prevPath = page > 1 ? (page === 2 ? basePath : `${basePath}page/${page - 1}/`) : undefined;
+const nextPath = page < totalPages ? `${basePath}page/${page + 1}/` : undefined;
+---
+
+<BaseLayout
+	title={`${seoTitle}${pageSuffix}`}
+	description={page > 1 ? `${seoDescription} Page ${page} of ${totalPages}.` : seoDescription}
+	path={pagePath}
+	image={image ?? posts[0]?.cover.shareSrc}
+	noindex={noindex}
+	prevPath={prevPath}
+	nextPath={nextPath}
+	type={type}
+	schema={[makeBreadcrumbs(allCrumbs, site), ...schema]}
+>
+	<div class="page-wrap">
+		<Breadcrumbs items={allCrumbs} />
+		<header class="listing-head">
+			<slot name="before-heading" />
+			{eyebrow && <span class="eyebrow">{eyebrow}</span>}
+			<h1 class="listing-title">{heading}{pageSuffix}</h1>
+			{intro && page === 1 && <p class="listing-intro">{intro}</p>}
+			{facts.length > 0 && (
+				<p class="listing-facts">
+					{facts.map((fact) => <span>{fact}</span>)}
+				</p>
+			)}
+			<slot name="after-heading" />
+		</header>
+
+		{
+			posts.length ? (
+				<ul class="post-grid">
+					{posts.map((post, index) => (
+						<li>
+							<PostCard post={post} eager={index === 0 && page === 1} headingLevel={2} />
+						</li>
+					))}
+				</ul>
+			) : (
+				<p class="empty-state">No posts here yet. New guides land every week, so check back soon.</p>
+			)
+		}
+
+		<Pagination current={page} total={totalPages} basePath={basePath} />
+
+		<slot />
+
+		<div class="section">
+			<ChannelCta />
+		</div>
+	</div>
+</BaseLayout>

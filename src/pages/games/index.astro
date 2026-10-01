@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CoverImage from '../../components/CoverImage.astro';
+import { getGames } from '../../lib/content';
+import { makeBreadcrumbs, toUrl } from '../../lib/seo/schema';
+
+const games = (await getGames()).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+const site = Astro.site ?? new URL(Astro.url.origin);
+const crumbs = [
+	{ name: 'Home', path: '/' },
+	{ name: 'Games', path: '/games/' },
+];
+const list = {
+	'@type': 'ItemList',
+	name: 'Game hubs',
+	itemListElement: games.map((game, index) => ({
+		'@type': 'ListItem',
+		position: index + 1,
+		url: toUrl(`/games/${game.slug}/`, site),
+		name: game.name,
+	})),
+};
+---
+
+<BaseLayout
+	title="Game Hubs: Guides and Reviews by Game"
+	description="Pick a game to see every SWG Devo guide, settings walkthrough and review for it in one place."
+	path="/games/"
+	schema={[makeBreadcrumbs(crumbs, site), list]}
+>
+	<div class="page-wrap">
+		<Breadcrumbs items={crumbs} />
+		<header class="listing-head">
+			<span class="eyebrow">Game hubs</span>
+			<h1 class="listing-title">Games we cover</h1>
+			<p class="listing-intro">Each hub collects every guide, settings walkthrough and review for one game, so you never have to dig through the archive.</p>
+		</header>
+		<ul class="game-grid">
+			{
+				games.map((game) => (
+					<li>
+						<a class="game-card" href={`/games/${game.slug}/`}>
+							{game.cover && <CoverImage image={game.cover} alt="" sizes="(min-width: 1024px) 200px, 50vw" />}
+							<div class="game-card-body">
+								<h2 class="game-card-name">{game.name}</h2>
+								<p class="game-card-meta">
+									{game.count} {game.count === 1 ? 'post' : 'posts'}
+								</p>
+							</div>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</BaseLayout>

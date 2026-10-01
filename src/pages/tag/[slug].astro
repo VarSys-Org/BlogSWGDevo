@@ -1,0 +1,39 @@
+---
+import ListingLayout from '../../layouts/ListingLayout.astro';
+import { SITE } from '../../config/site';
+import { getPostsWithTag, getTags, type FullPost, type Tag } from '../../lib/content';
+
+export async function getStaticPaths() {
+	const tags = await getTags();
+	return Promise.all(
+		tags.map(async (tag) => ({
+			params: { slug: tag.slug },
+			props: { tag, posts: await getPostsWithTag(tag.slug) },
+		})),
+	);
+}
+
+interface Props {
+	tag: Tag;
+	posts: FullPost[];
+}
+
+const { tag, posts } = Astro.props;
+const basePath = `/tag/${tag.slug}/`;
+---
+
+<ListingLayout
+	heading={`#${tag.name}`}
+	eyebrow="Tag"
+	facts={[`${tag.count} ${tag.count === 1 ? 'post' : 'posts'}`]}
+	posts={posts}
+	basePath={basePath}
+	crumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'All posts', path: '/blog/' },
+		{ name: tag.name, path: basePath },
+	]}
+	seoTitle={`${tag.name} Guides and Posts`}
+	seoDescription={`Every SWG Devo guide, review and list tagged ${tag.name}.`}
+	noindex={tag.count < SITE.minPostsToIndexTag}
+/>

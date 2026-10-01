@@ -1,0 +1,98 @@
+---
+import { NAV, SITE } from '../config/site';
+import BrandMark from './BrandMark.astro';
+import Icon from './Icon.astro';
+
+const path = Astro.url.pathname;
+const pageIsIn = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="site-header">
+	<div class="page-wrap header-row">
+		<a class="brand" href="/" aria-label={`${SITE.name} home`}>
+			<BrandMark />
+			<span class="brand-name">SWG <b>Devo</b></span>
+		</a>
+
+		<nav class="nav-main" aria-label="Main">
+			<ul class="nav-list">
+				{
+					NAV.map((item) => (
+						<li>
+							<a class="nav-link" href={item.href} aria-current={pageIsIn(item.href) ? 'page' : undefined}>
+								{item.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<a class="icon-button" href="/search/" aria-label="Search posts">
+			<Icon name="search" />
+		</a>
+		<button class="icon-button" type="button" data-theme-toggle aria-label="Switch light or dark theme">
+			<Icon name="moon" class="theme-icon-light" />
+			<Icon name="sun" class="theme-icon-dark" />
+		</button>
+		<button
+			class="icon-button menu-toggle"
+			type="button"
+			data-menu-toggle
+			aria-expanded="false"
+			aria-controls="mobile-nav"
+			aria-label="Open menu"
+		>
+			<Icon name="menu" />
+		</button>
+	</div>
+
+	<nav id="mobile-nav" class="mobile-nav page-wrap" aria-label="Main" hidden>
+		<ul class="mobile-nav-list">
+			{
+				NAV.map((item) => (
+					<li>
+						<a class="nav-link" href={item.href} aria-current={pageIsIn(item.href) ? 'page' : undefined}>
+							{item.label}
+						</a>
+					</li>
+				))
+			}
+			<li>
+				<a class="nav-link" href="/blog/">All posts</a>
+			</li>
+			<li>
+				<a class="nav-link" href="/about/">About</a>
+			</li>
+		</ul>
+	</nav>
+</header>
+
+<script>
+	const themeButton = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+	themeButton?.addEventListener('click', () => {
+		const dark = document.documentElement.classList.toggle('dark');
+		try {
+			localStorage.setItem('theme', dark ? 'dark' : 'light');
+		} catch {
+			/* storage blocked: the theme still switches for this visit */
+		}
+	});
+
+	const menuButton = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+	const menu = document.getElementById('mobile-nav');
+	menuButton?.addEventListener('click', () => {
+		if (!menu) return;
+		const open = menu.hasAttribute('hidden');
+		menu.toggleAttribute('hidden', !open);
+		menuButton.setAttribute('aria-expanded', String(open));
+		menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+	});
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape' && menu && !menu.hasAttribute('hidden')) {
+			menu.setAttribute('hidden', '');
+			menuButton?.setAttribute('aria-expanded', 'false');
+			menuButton?.focus();
+		}
+	});
+</script>
