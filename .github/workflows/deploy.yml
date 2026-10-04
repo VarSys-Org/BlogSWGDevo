@@ -11,7 +11,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE: ghcr.io/codecraftsman-jr/swg-devo-blog
+  IMAGE: ghcr.io/varsys-org/swg-devo-blog
 
 jobs:
   build-and-deploy:
