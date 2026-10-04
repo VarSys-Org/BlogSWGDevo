@@ -1,7 +1,6 @@
 ---
 import PlainPage from '../layouts/PlainPage.astro';
 import AuthorBox from '../components/post/AuthorBox.astro';
-import { SITE } from '../config/site';
 import { getAuthors } from '../lib/content';
 import { toUrl } from '../lib/seo/schema';
 
@@ -9,22 +8,22 @@ const authors = await getAuthors();
 const site = Astro.site ?? new URL(Astro.url.origin);
 const aboutPage = {
 	'@type': 'AboutPage',
-	name: `About ${SITE.name}`,
+	name: 'About Swagamerz',
 	url: toUrl('/about/', site),
 	about: { '@id': toUrl('/#organization', site) },
 };
 ---
 
 <PlainPage
-	title="About SWG Devo"
-	heading="About SWG Devo"
+	title="About Swagamerz"
+	heading="About Swagamerz"
 	eyebrow="About"
-	description="SWG Devo is a gaming YouTube channel and blog that turns tested settings, tips and reviews into guides you can scroll back to."
+	description="Swagamerz is a gaming channel and blog with guides, settings walkthroughs, reviews and tips for players."
 	path="/about/"
 	schema={[aboutPage]}
 >
 	<p>
-		SWG Devo started as a YouTube channel about competitive shooters and grew into open-world games, mobile gaming and PC hardware. The comments kept asking for the same thing: the settings written down. This blog is the answer.
+		Swagamerz is a gaming channel and blog for players looking for useful guides, settings walkthroughs, reviews and tips across PC, console and mobile games.
 	</p>
 	<h2>What we cover</h2>
 	<ul>
@@ -34,18 +33,6 @@ const aboutPage = {
 		<li><strong>Mobile:</strong> BGMI and other mobile shooters, tested on mid-range phones.</li>
 		<li><strong>Esports:</strong> ranked climbing and how competitive play works.</li>
 	</ul>
-	<h2>Who writes here</h2>
+	<h2>About the creator</h2>
 	{authors.map((author) => <AuthorBox author={author} />)}
-	<h2>Find us</h2>
-	<ul>
-		{
-			SITE.social.map((item) => (
-				<li>
-					<a href={item.url} rel="me noopener" target="_blank">
-						{item.label}
-					</a>
-				</li>
-			))
-		}
-	</ul>
 </PlainPage>

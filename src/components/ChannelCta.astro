@@ -13,9 +13,11 @@ const signupUrl = import.meta.env.PUBLIC_SIGNUP_URL ?? '';
 		<h2 class="cta-title" id="cta-title">{SITE.cta.title}</h2>
 		<p class="cta-text">{SITE.cta.text}</p>
 		<div class="cta-actions">
-			<a class="button" href={SITE.youtubeChannel} target="_blank" rel="noopener">
-				<Icon name="youtube" /> Subscribe on YouTube
-			</a>
+			{SITE.youtubeChannel && (
+				<a class="button" href={SITE.youtubeChannel} target="_blank" rel="noopener">
+					<Icon name="youtube" /> Subscribe on YouTube
+				</a>
+			)}
 			<a class="button button-ghost" href="/rss.xml"><Icon name="rss" /> RSS feed</a>
 		</div>
 	</div>
@@ -51,7 +53,7 @@ const signupUrl = import.meta.env.PUBLIC_SIGNUP_URL ?? '';
 			const email = new FormData(form).get('email');
 			const endpoint = form.dataset.endpoint;
 			if (!endpoint) {
-				show('Email sign-up opens soon. Subscribe on YouTube to get every new guide now.', '');
+				show('Email sign-up opens soon. Check back for new guides.', '');
 				return;
 			}
 			try {

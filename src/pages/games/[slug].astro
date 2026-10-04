@@ -35,7 +35,7 @@ const facts = [
 <ListingLayout
 	heading={`${game.name} guides, settings and reviews`}
 	eyebrow="Game hub"
-	intro={`${game.description} Here is every SWG Devo guide, settings walkthrough and review for ${game.name}.`}
+	intro={`${game.description} Here is every Swagamerz guide, settings walkthrough and review for ${game.name}.`}
 	facts={facts}
 	posts={posts}
 	basePath={basePath}
@@ -45,7 +45,7 @@ const facts = [
 		{ name: game.name, path: basePath },
 	]}
 	seoTitle={`${game.name} Guides, Best Settings and Tips`}
-	seoDescription={`${game.name} guides, best settings, tips and reviews from SWG Devo, all in one place.`}
+	seoDescription={`${game.name} guides, best settings, tips and reviews from Swagamerz, all in one place.`}
 	image={game.cover?.shareSrc}
 	noindex={posts.length === 0}
 	schema={makeGameHub(game, posts, site)}

@@ -1,40 +1,13 @@
 [
   {
-    "slug": "devo",
-    "name": "Devo",
-    "role": "Founder and lead creator, SWG Devo",
-    "bio": "Devo runs the SWG Devo YouTube channel and has been streaming competitive shooters and open-world games since 2018. Every settings guide on this site is tested on his own PC and phone before it goes live.",
+    "slug": "vasanthan",
+    "name": "Vasanthan",
+    "role": "Creator, Swagamerz",
+    "bio": "Vasanthan creates Swagamerz, a gaming channel and blog sharing guides, settings, reviews and tips for players.",
     "expertise": [
-      "Competitive FPS",
-      "PC performance",
-      "Mobile shooters"
+      "Gaming guides",
+      "PC, console and mobile gaming"
     ],
-    "links": [
-      {
-        "label": "YouTube",
-        "url": "https://www.youtube.com/@swgdevo"
-      },
-      {
-        "label": "Instagram",
-        "url": "https://www.instagram.com/swgdevo"
-      }
-    ]
-  },
-  {
-    "slug": "kavin-r",
-    "name": "Kavin R.",
-    "role": "Hardware and reviews editor",
-    "bio": "Kavin builds and benchmarks the test rigs used for SWG Devo reviews. He writes the hardware guides and checks every performance claim against real frame-time captures.",
-    "expertise": [
-      "PC building",
-      "Monitors and peripherals",
-      "Game reviews"
-    ],
-    "links": [
-      {
-        "label": "X",
-        "url": "https://x.com/swgdevo"
-      }
-    ]
+    "links": []
   }
 ]

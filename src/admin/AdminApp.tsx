@@ -54,7 +54,7 @@ function SignIn({ session, onDone }: { session: Session; onDone: () => void }) {
 	return (
 		<main className="adm-signin">
 			<form className="adm-panel adm-signin-card" onSubmit={submit}>
-				<p className="adm-kicker">SWG Devo</p>
+				<p className="adm-kicker">Swagamerz</p>
 				<h1 className="adm-signin-title">Admin sign in</h1>
 				{!session.setUp ? (
 					<Notice tone="info">

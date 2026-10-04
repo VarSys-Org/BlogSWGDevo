@@ -1,21 +1,16 @@
 {
-  "name": "SWG Devo",
-  "shortName": "SWG Devo",
-  "tagline": "Gaming guides, settings and honest reviews",
-  "description": "Gaming guides, best settings, honest reviews and esports tips from the SWG Devo channel. Clear answers for PC, console and mobile players.",
+  "name": "Swagamerz",
+  "shortName": "Swagamerz",
+  "tagline": "Gaming guides, settings and reviews for PC, console and mobile",
+  "description": "Swagamerz publishes practical gaming guides, settings walkthroughs, reviews and tips for PC, console and mobile players.",
   "locale": "en_IN",
   "lang": "en",
   "themeColor": "#0d1017",
   "defaultImage": "/images/og-default.jpg",
   "logo": "/images/logo-512.png",
-  "youtubeChannel": "https://www.youtube.com/@swgdevo",
-  "xHandle": "@swgdevo",
-  "social": [
-    { "label": "YouTube", "url": "https://www.youtube.com/@swgdevo", "icon": "youtube" },
-    { "label": "Instagram", "url": "https://www.instagram.com/swgdevo", "icon": "instagram" },
-    { "label": "Discord", "url": "https://discord.gg/swgdevo", "icon": "discord" },
-    { "label": "X", "url": "https://x.com/swgdevo", "icon": "x" }
-  ],
+  "youtubeChannel": "",
+  "xHandle": "",
+  "social": [],
   "nav": [
     { "label": "Guides", "href": "/category/guides/" },
     { "label": "Reviews", "href": "/category/reviews/" },
@@ -25,7 +20,7 @@
     { "label": "Games", "href": "/games/" }
   ],
   "home": {
-    "eyebrow": "SWG Devo / Gaming blog",
+    "eyebrow": "Swagamerz / Gaming blog",
     "title": "Gaming guides that start with the answer",
     "introTitle": "Tested settings, not guesses",
     "introText": "Every guide lists the game patch it was checked on and is tried on real PCs and phones first. When a patch changes something, the guide and its date change too.",
@@ -33,7 +28,7 @@
   },
   "cta": {
     "title": "New guide every week",
-    "text": "Every SWG Devo video gets a written guide here with the exact settings. Subscribe on YouTube or get new guides by email."
+    "text": "Find practical guides, settings walkthroughs, reviews and gaming tips for PC, console and mobile."
   },
   "postsPerPage": 9,
   "minPostsToIndexTag": 2,

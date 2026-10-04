@@ -1,27 +1,13 @@
 ---
 import PlainPage from '../layouts/PlainPage.astro';
-import { SITE } from '../config/site';
 ---
 
 <PlainPage
-	title="Contact SWG Devo"
+	title="Contact Swagamerz"
 	heading="Contact"
 	eyebrow="Contact"
-	description="Suggest a guide, report a mistake or ask about working with the SWG Devo channel."
+	description="Suggest a guide, report a mistake or ask about working with the Swagamerz channel."
 	path="/contact/"
 >
-	<p>The fastest way to reach the team is through the channels below. Guide suggestions with the most requests become the next posts.</p>
-	<ul>
-		{
-			SITE.social.map((item) => (
-				<li>
-					<a href={item.url} rel="noopener" target="_blank">
-						{item.label}
-					</a>
-				</li>
-			))
-		}
-	</ul>
-	<h2>Business and sponsorships</h2>
-	<p>Send a direct message on Instagram or Discord with "Business" in the first line and we will reply from the official account.</p>
+	<p>Contact details for guide suggestions, corrections and business enquiries will be published here.</p>
 </PlainPage>

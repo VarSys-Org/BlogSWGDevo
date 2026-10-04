@@ -1,6 +1,6 @@
-# SWG Devo Blog
+# Swagamerz Gaming Blog
 
-Gaming blog for the SWG Devo channel: guides, best settings, reviews, hardware and esports.
+Gaming blog for the Swagamerz channel: guides, settings, reviews, hardware and esports.
 Built with Astro: public pages are fully static HTML (best for SEO and speed), and an admin
 dashboard plus an MCP server edit the content. Content lives as JSON in `content/` until a
 real backend is chosen; the content layer lets any backend plug in later.
@@ -17,7 +17,7 @@ real backend is chosen; the content layer lets any backend plug in later.
 | `npm run mcp` | Start the MCP server over stdio (for local AI agents) |
 | `npm run mock:covers` | Rebuild mock cover art, share image and icons in `public/images/` |
 
-Copy `.env.example` to `.env` and set `SITE_URL` before a production build. Canonical URLs,
+Set `SITE_URL=https://swagamerz.varsys.co.in` in Coolify before a production build. Canonical URLs,
 Open Graph tags, the sitemap, RSS and robots.txt are all built from it.
 
 ## Admin dashboard (`/admin/`)

@@ -111,7 +111,7 @@ export const siteSchema = z.object({
 	themeColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),
 	defaultImage: z.string(),
 	logo: z.string(),
-	youtubeChannel: z.string().url(),
+	youtubeChannel: z.union([z.string().url(), z.literal('')]),
 	xHandle: z.string(),
 	social: z.array(
 		z.object({

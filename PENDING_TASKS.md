@@ -1,6 +1,7 @@
-# Pending tasks - SWG Devo blog
+# Pending tasks - Swagamerz gaming blog
 
-Last updated: 2 Oct 2026. Branch: `stagging` (last commit `b344951`).
+Last updated: 4 Oct 2026. Production source: `main`. Brand: Swagamerz.
+Production domain: `https://swagamerz.varsys.co.in/`.
 
 ## Where things stand
 
@@ -21,16 +22,14 @@ Done and pushed:
 
 ## Pending - before launch (do first)
 
-- [ ] **Real brand facts.** Confirm the channel name, YouTube URL, Instagram, Discord and X handles
-      (current `@swgdevo` links are guesses). Change in /admin > Site settings.
-- [ ] **Real authors.** Replace "Devo" and "Kavin R." with real people, bios and photos
-      (/admin > Authors). Author trust matters for ranking.
+- [ ] **Verified channel links.** Add the correct YouTube, Instagram, Discord and X URLs in
+      /admin > Site settings when confirmed; currently unverified links are intentionally omitted.
+- [x] **Creator identity.** The public author is Vasanthan, the creator of Swagamerz.
 - [ ] **Real posts.** The 14 sample posts are short (300-600 words) and partly invented.
       Replace them with real guides of 900+ words; use the SEO pane until each scores 80+.
 - [ ] **Real cover images.** Mock covers come from `scripts/make-mock-covers.mjs`. Upload real
       screenshots/thumbnails through /admin > Media (alt text required).
-- [ ] **Pick hosting and the domain.** Set `SITE_URL` (canonical, sitemap and share links all
-      use it). VPS is WebDedis (see workspace `docs/reference/vps-infra.md`); DNS via Hostinger.
+- [x] **Hosting and domain selected.** Coolify on WebDedis; `SITE_URL` is the Swagamerz domain.
 - [ ] **Decide the publish model:**
       - Option A (now): edit locally -> commit `content/` + `public/uploads/` -> deploy builds the static site.
       - Option B: run the Node server (`npm start`) on the VPS so /admin works online; needs a
@@ -39,6 +38,8 @@ Done and pushed:
       remote MCP is wanted) `BLOG_MCP_KEY`. Store them in OpenBao, never in the repo.
 - [ ] **Search engines.** Paste the Google Search Console HTML-tag code in /admin > Site settings,
       submit `sitemap.xml`, request indexing for home and `/blog/`, then import into Bing.
+- [ ] **AdSense.** Add the actual publisher ID and ads.txt after the AdSense account is approved;
+      no ads are currently served.
 
 ## Pending - backend (when chosen)
 
@@ -76,4 +77,4 @@ Done and pushed:
 - [ ] The `swg-blog` dev entry in the workspace `.claude/launch.json` is not committed (that
       file has other agents' changes too).
 - [ ] Optional: upgrade Astro 5 -> 7 later (current add-ons are pinned to the Astro 5 line).
-- [ ] Merge `stagging` into `main` only when ready to go live (main auto-deploys).
+- [x] Production deploys use `main` only. Never deploy from `stagging`.

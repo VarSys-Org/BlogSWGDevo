@@ -1,20 +1,20 @@
 {
   "slug": "swg-devo-blog-launch",
-  "title": "The SWG Devo Blog Is Live: What You Will Find Here",
-  "description": "The SWG Devo channel now has a blog. Here is what we will publish, how we test settings and reviews, and how to suggest the next guide.",
+  "title": "The Swagamerz Blog Is Live: What You Will Find Here",
+  "description": "The Swagamerz channel now has a blog. Here is what we will publish, how we test settings and reviews, and how to suggest the next guide.",
   "kind": "news",
   "category": "news",
   "tags": [
     "Channel update"
   ],
   "games": [],
-  "author": "devo",
+  "author": "vasanthan",
   "publishedAt": "2026-09-30T20:00:00+05:30",
   "cover": {
     "src": "/images/posts/swg-devo-blog-launch-1200.webp",
     "srcset": "/images/posts/swg-devo-blog-launch-640.webp 640w, /images/posts/swg-devo-blog-launch-1200.webp 1200w",
     "shareSrc": "/images/posts/swg-devo-blog-launch-1200.jpg",
-    "alt": "SWG Devo logo glowing on a dark streaming setup",
+    "alt": "Swagamerz logo glowing on a dark streaming setup",
     "width": 1200,
     "height": 675
   },

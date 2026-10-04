@@ -1,4 +1,4 @@
-// The SWG Devo blog MCP server. One definition, two ways to run it:
+// The Swagamerz blog MCP server. One definition, two ways to run it:
 //   - stdio:  `npm run mcp` (local agents: Claude Code, OpenCode, Codex)
 //   - HTTP:   POST /api/mcp/ with `Authorization: Bearer $BLOG_MCP_KEY`
 // Both call the same store actions as /admin, so agents get the same checks.
@@ -9,7 +9,7 @@ import { readItems, StoreError, TYPES, writeItem, type ItemType } from '../store
 import { saveImage } from '../store/media.ts';
 import { checkPost } from '../seo/checkPost.ts';
 
-const GUIDE = `Manage the SWG Devo gaming blog: posts, categories, games, authors, site settings, media and redirects.
+const GUIDE = `Manage the Swagamerz gaming blog: posts, categories, games, authors, site settings, media and redirects.
 
 Rules:
 - Before writing a type for the first time, call blog_read with fields=true. Do not guess field names.
